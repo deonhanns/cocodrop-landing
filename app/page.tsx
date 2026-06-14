@@ -4,6 +4,8 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import LogoMark from "@/components/LogoMark";
+import { Icon } from "@/components/Icon";
+import type { IconName } from "@/components/Icon";
 
 type Path = "maker" | "creator" | "shopper" | null;
 
@@ -11,7 +13,7 @@ const PATHS = {
   maker: {
     label: "I make things",
     sub: "Sell your craft to the whole country",
-    icon: "🛠️",
+    iconName: "package" as IconName,
     color: "#2D6A4F",
     headline: "Your products. Live on air.",
     pitch:
@@ -27,7 +29,7 @@ const PATHS = {
   creator: {
     label: "I create content",
     sub: "Earn real commission hosting drops",
-    icon: "🎥",
+    iconName: "broadcast" as IconName,
     color: "#D4943A",
     headline: "Earn from every sale you drive.",
     pitch:
@@ -43,7 +45,7 @@ const PATHS = {
   shopper: {
     label: "I want to shop",
     sub: "Discover local. Buy live.",
-    icon: "🛍️",
+    iconName: "cart" as IconName,
     color: "#E8440A",
     headline: "Shop local. Watch it live.",
     pitch:
@@ -220,7 +222,7 @@ function LandingContent() {
                           e.currentTarget.style.transform = "translateX(0)";
                         }}
                       >
-                        <span style={{ fontSize: 28 }}>{p.icon}</span>
+                        <Icon name={p.iconName} size={28} color={p.color} />
                         <div className="flex-1">
                           <div
                             className="font-bold text-base"
@@ -258,7 +260,7 @@ function LandingContent() {
         {/* Footer */}
         <div className="text-center mt-16 pt-8 border-t border-[#1C1A18]">
           <p className="mono text-xs text-mist leading-relaxed">
-            Built in Cape Town · By a 15-year-old founder · For South Africa
+            South Africa's maker economy, live. No middlemen, just possibility.
           </p>
           <p className="mono text-[10px] text-[#3a3632] mt-2">
             CocoDrop · Founding Community · 2026
@@ -325,9 +327,13 @@ function SignupForm({
     <div className="fade-up">
       <button
         onClick={onBack}
-        className="mono text-xs text-mist mb-4 flex items-center gap-1"
+        className="mono text-xs text-cream mb-5 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+        style={{ background: "#2E2C2A", border: "1px solid #3A3632" }}
       >
-        ← back
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 3L5 7L9 11" stroke="#F5F0E8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        back
       </button>
 
       <div
@@ -338,7 +344,7 @@ function SignupForm({
         }}
       >
         <div className="flex items-center gap-3 mb-4">
-          <span style={{ fontSize: 32 }}>{p.icon}</span>
+          <Icon name={p.iconName} size={32} color={p.color} />
           <div>
             <h2 className="bebas text-2xl" style={{ color: p.color }}>
               {p.headline}
