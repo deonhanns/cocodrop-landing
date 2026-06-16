@@ -98,4 +98,328 @@ function LandingContent() {
   const welcome = sourceWelcome[source.toLowerCase()] || "";
 
   return (
-    <div
+    <div className="min-h-screen relative">
+      <div
+        style={{
+          position: "fixed",
+          top: "-20%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "600px",
+          height: "600px",
+          background:
+            "radial-gradient(circle, rgba(232,68,10,0.12) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+      <div
+        className="drop-in w-full overflow-hidden relative z-10"
+        style={{ lineHeight: 0 }}
+      >
+        <video
+          src="/cocodrop-intro.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ width: "100%", display: "block" }}
+        />
+      </div>
+      <div className="relative z-10 max-w-2xl mx-auto px-5 py-8">
+        {welcome && (
+          <div className="text-center mb-4 fade-up">
+            <span
+              className="mono text-xs px-3 py-1.5 rounded-full"
+              style={{
+                background: "rgba(232,68,10,0.12)",
+                border: "1px solid rgba(232,68,10,0.3)",
+                color: "#FF6B35",
+              }}
+            >
+              {welcome}
+            </span>
+          </div>
+        )}
+        <div className="flex flex-col items-center text-center pt-2 pb-8">
+          <p className="text-mist text-base leading-relaxed max-w-md">
+            CocoDrop Beta — 50 testers help shape South Africa&apos;s first live
+            commerce app.
+          </p>
+        </div>
+        <div className="flex justify-center mb-10">
+          <div
+            className="flex items-center gap-3 px-5 py-3 rounded-xl"
+            style={{ background: "#1C1A18", border: "1px solid #2E2C2A" }}
+          >
+            <div className="relative flex items-center justify-center">
+              <div
+                style={{
+                  position: "absolute",
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  background: "#E8440A",
+                  animation: "pulse-ring 1.5s ease-out infinite",
+                }}
+              />
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#E8440A",
+                }}
+              />
+            </div>
+            <span className="mono text-sm text-cream">
+              <span className="text-ember font-bold">{count}</span> of 50 beta
+              spots filled
+            </span>
+          </div>
+        </div>
+        {!submitted ? (
+          <>
+            {!path && (
+              <div className="fade-up">
+                <p className="text-center mono text-xs uppercase tracking-[3px] text-mist mb-5">
+                  Which role fits you in the beta?
+                </p>
+                <div className="space-y-3">
+                  {(Object.keys(PATHS) as Array<keyof typeof PATHS>).map(
+                    (key) => {
+                      const p = PATHS[key];
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => setPath(key)}
+                          className="w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all"
+                          style={{
+                            background: "#1C1A18",
+                            border: "1px solid #2E2C2A",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = p.color;
+                            e.currentTarget.style.transform = "translateX(4px)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = "#2E2C2A";
+                            e.currentTarget.style.transform = "translateX(0)";
+                          }}
+                        >
+                          <Icon name={p.iconName} size={28} color={p.color} />
+                          <div className="flex-1">
+                            <div
+                              className="font-bold text-base"
+                              style={{ color: p.color }}
+                            >
+                              {p.label}
+                            </div>
+                            <div className="text-mist text-sm">{p.sub}</div>
+                          </div>
+                          <span className="text-mist text-xl">→</span>
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+            )}
+            {path && (
+              <SignupForm
+                path={path}
+                source={source}
+                onBack={() => setPath(null)}
+                onDone={(newTotal) => {
+                  setSubmitted(true);
+                  if (newTotal) setTargetCount(newTotal);
+                }}
+              />
+            )}
+          </>
+        ) : (
+          <ThankYou path={path} />
+        )}
+        <div className="text-center mt-16 pt-8 border-t border-[#1C1A18]">
+          <p className="mono text-xs text-mist leading-relaxed">
+            CocoDrop Beta — 50 testers. Your feedback shapes the final product.
+          </p>
+          <p className="mono text-[10px] text-[#3a3632] mt-2">
+            CocoDrop · Beta Launch · 2026
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SignupForm({
+  path,
+  source,
+  onBack,
+  onDone,
+}: {
+  path: keyof typeof PATHS;
+  source: string;
+  onBack: () => void;
+  onDone: (total?: number) => void;
+}) {
+  const p = PATHS[path];
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [extra, setExtra] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const extraLabel =
+    path === "maker"
+      ? "What do you make? (optional)"
+      : path === "creator"
+      ? "Your social handle or platform (optional)"
+      : "Where in SA are you? (optional)";
+
+  const canSubmit = name && contact;
+
+  async function submit() {
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: path,
+          name,
+          contact,
+          extra,
+          source,
+          joinedAt: new Date().toISOString(),
+        }),
+      });
+      const data = await res.json();
+      onDone(data.total);
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="fade-up">
+      <button
+        onClick={onBack}
+        className="mono text-xs text-cream mb-5 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+        style={{ background: "#2E2C2A", border: "1px solid #3A3632" }}
+      >
+        back
+      </button>
+      <div
+        className="rounded-2xl p-6 mb-5"
+        style={{ background: "#1C1A18", border: `1px solid ${p.color}44` }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <Icon name={p.iconName} size={32} color={p.color} />
+          <h2 className="bebas text-2xl" style={{ color: p.color }}>
+            {p.headline}
+          </h2>
+        </div>
+        <p className="text-cream text-sm leading-relaxed mb-5 opacity-80">
+          {p.pitch}
+        </p>
+        <div className="space-y-2">
+          {p.benefits.map((b, i) => (
+            <div key={i} className="flex gap-2 items-start">
+              <span style={{ color: p.color, fontWeight: 700 }}>✓</span>
+              <span className="text-sm text-cream opacity-75">{b}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-3">
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+          style={{
+            background: "#1C1A18",
+            border: "1px solid #2E2C2A",
+            color: "#F5F0E8",
+          }}
+        />
+        <input
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          placeholder="WhatsApp number or email"
+          className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+          style={{
+            background: "#1C1A18",
+            border: "1px solid #2E2C2A",
+            color: "#F5F0E8",
+          }}
+        />
+        <input
+          value={extra}
+          onChange={(e) => setExtra(e.target.value)}
+          placeholder={extraLabel}
+          className="w-full rounded-xl px-4 py-3 text-sm outline-none"
+          style={{
+            background: "#1C1A18",
+            border: "1px solid #2E2C2A",
+            color: "#F5F0E8",
+          }}
+        />
+        {error && (
+          <p className="text-sm" style={{ color: "#FF3B30" }}>
+            {error}
+          </p>
+        )}
+        <button
+          onClick={submit}
+          disabled={!canSubmit || submitting}
+          className="w-full py-4 rounded-xl mono text-sm font-bold tracking-wider transition-opacity"
+          style={{
+            background: canSubmit ? p.color : "#2E2C2A",
+            color: canSubmit ? "#fff" : "#6B6560",
+            opacity: submitting ? 0.6 : 1,
+          }}
+        >
+          {submitting ? "JOINING..." : p.cta.toUpperCase()}
+        </button>
+        <p className="mono text-[10px] text-mist text-center leading-relaxed">
+          No spam. We&apos;ll send you the app link and testing instructions.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ThankYou({ path }: { path: Path }) {
+  const p = path ? PATHS[path] : null;
+  return (
+    <div className="fade-up text-center py-8">
+      <div className="drop-in mb-5 flex justify-center">
+        <LogoMark size={64} animated />
+      </div>
+      <h2
+        className="bebas text-3xl mb-3"
+        style={{ color: p?.color || "#E8440A" }}
+      >
+        You&apos;re on the beta list.
+      </h2>
+      <p className="text-cream opacity-80 leading-relaxed max-w-sm mx-auto mb-6">
+        Thanks for signing up. You&apos;re one of 50 testers who will shape
+        CocoDrop before the public launch.
+      </p>
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-coal" />}>
+      <LandingContent />
+    </Suspense>
+  );
+}
