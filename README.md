@@ -1,10 +1,11 @@
-# CocoDrop Landing 🪂
+# CocoDrop Landing — Beta Recruitment
 
-The public founding-member landing page for CocoDrop. Where radio listeners and social followers go to join as a Maker, Creator, or Shopper before launch.
+Recruitment page for the CocoDrop closed beta. 50 testers across three roles
+(Maker, Creator, Shopper) will test the app and shape the final product.
 
 ## What it does
 - **Segments signups** into Maker / Creator / Shopper paths
-- **Live counter** showing how many have joined (social proof)
+- **Live counter** showing X of 50 beta spots filled
 - **Source tracking** via `?from=heartfm` etc — tailored welcome + tracks which radio station drove signups
 - Captures everything to a Google Sheet
 
@@ -29,7 +30,7 @@ GOOGLE_SHEET_WEBHOOK=your_apps_script_url
 
 ## Deploy
 Push to GitHub, connect to Vercel, point cocodrop.co.za at it.
-On go-live, repoint the domain to the platform repo.
+Post-beta, repoint the domain to the platform repo.
 
 ---
-*CocoDrop · Founding Community · 2026*
+*CocoDrop · Beta Launch · 2026*

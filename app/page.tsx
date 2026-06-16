@@ -21,10 +21,10 @@ const PATHS = {
     benefits: [
       "Zero cost to join — you only pay when you sell",
       "Featured in live drops to thousands of viewers",
-      "Founding Maker badge — you were here first",
-      "Your products on SA's first live commerce platform",
+      "Beta tester badge — your name in the credits",
+      "Your feedback shapes the final product",
     ],
-    cta: "Join as a Founding Maker",
+    cta: "Apply for Beta Access",
   },
   creator: {
     label: "I create content",
@@ -37,10 +37,10 @@ const PATHS = {
     benefits: [
       "Commission on every sale — from drop one",
       "No follower count required to start",
-      "First-mover advantage — get in before everyone",
-      "Founding Creator badge on your profile forever",
+      "Beta tester badge — your name in the credits",
+      "Your feedback shapes the creator experience",
     ],
-    cta: "Join as a Founding Creator",
+    cta: "Apply for Beta Access",
   },
   shopper: {
     label: "I want to shop",
@@ -54,9 +54,9 @@ const PATHS = {
       "Watch products live before you buy",
       "Support local SA makers directly",
       "Escrow protection — money held until delivery",
-      "Be first to the drops everyone will talk about",
+      "Beta tester badge — your name in the credits",
     ],
-    cta: "Join as a Founding Shopper",
+    cta: "Apply for Beta Access",
   },
 };
 
@@ -66,7 +66,7 @@ function LandingContent() {
 
   const [path, setPath] = useState<Path>(null);
   const [count, setCount] = useState(0);
-  const [targetCount, setTargetCount] = useState(247);
+  const [targetCount, setTargetCount] = useState(50);
   const [submitted, setSubmitted] = useState(false);
 
   // Animated counter on load
@@ -154,9 +154,9 @@ function LandingContent() {
             />
           </div>
           <p className="text-mist text-base leading-relaxed max-w-md">
-            South Africa's first live commerce platform.
+            CocoDrop Beta — 50 testers help shape
             <br />
-            Watch local makers sell their craft, live.
+            South Africa's first live commerce app.
           </p>
         </div>
 
@@ -187,8 +187,8 @@ function LandingContent() {
               />
             </div>
             <span className="mono text-sm text-cream">
-              <span className="text-ember font-bold">{count.toLocaleString()}</span>{" "}
-              South Africans already joined
+              <span className="text-ember font-bold">{count}</span>{" "}
+              of 50 beta spots filled
             </span>
           </div>
         </div>
@@ -199,7 +199,7 @@ function LandingContent() {
             {!path && (
               <div className="fade-up">
                 <p className="text-center mono text-xs uppercase tracking-[3px] text-mist mb-5">
-                  What brings you to CocoDrop?
+                  Which role fits you in the beta?
                 </p>
                 <div className="space-y-3">
                   {(Object.keys(PATHS) as Array<keyof typeof PATHS>).map((key) => {
@@ -260,10 +260,10 @@ function LandingContent() {
         {/* Footer */}
         <div className="text-center mt-16 pt-8 border-t border-[#1C1A18]">
           <p className="mono text-xs text-mist leading-relaxed">
-            South Africa's maker economy, live. No middlemen, just possibility.
+            CocoDrop Beta — 50 testers. Your feedback shapes the final product.
           </p>
           <p className="mono text-[10px] text-[#3a3632] mt-2">
-            CocoDrop · Founding Community · 2026
+            CocoDrop · Beta Launch · 2026
           </p>
         </div>
       </div>
@@ -415,7 +415,7 @@ function SignupForm({
           {submitting ? "JOINING..." : p.cta.toUpperCase()}
         </button>
         <p className="mono text-[10px] text-mist text-center leading-relaxed">
-          No spam. We'll WhatsApp you when it's your turn to come on board.
+          No spam. We'll send you the app link and testing instructions.
         </p>
       </div>
     </div>
@@ -430,19 +430,19 @@ function ThankYou({ path }: { path: Path }) {
         <LogoMark size={64} animated />
       </div>
       <h2 className="bebas text-3xl mb-3" style={{ color: p?.color || "#E8440A" }}>
-        You're in.
+        You're on the beta list.
       </h2>
       <p className="text-cream opacity-80 leading-relaxed max-w-sm mx-auto mb-6">
-        Welcome to the founding community. You're one of the first South
-        Africans on CocoDrop. We'll WhatsApp you the moment it's your turn to
-        come on board.
+        Thanks for signing up. You're one of 50 testers who will shape
+        CocoDrop before the public launch. We'll send you the app link and
+        instructions when testing begins.
       </p>
       <div
         className="inline-block rounded-xl px-5 py-3"
         style={{ background: "#1C1A18", border: "1px solid #2E2C2A" }}
       >
         <p className="mono text-xs text-mist">
-          Share CocoDrop with someone who'd love it
+          Your feedback decides the final product
         </p>
       </div>
     </div>

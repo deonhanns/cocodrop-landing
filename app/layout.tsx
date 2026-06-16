@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CocoDrop — Live commerce from SA makers",
+  title: "CocoDrop Beta — 50 testers. Shape SA's first live commerce app.",
   description:
-    "Watch South African makers sell their craft live. Buy direct. No middlemen. Join the founding community.",
+    "Join 50 beta testers shaping CocoDrop — South Africa's first live commerce platform. Makers, creators, and shoppers wanted.",
   openGraph: {
-    title: "CocoDrop — Live commerce from SA makers",
+    title: "CocoDrop Beta — 50 testers. Shape SA's first live commerce app.",
     description:
-      "Be one of the first. Makers, creators, and shoppers building South Africa's first live commerce platform.",
+      "Be one of 50 testers who decide what CocoDrop becomes. Makers, creators, and shoppers — your feedback builds the final product.",
     type: "website",
   },
 };

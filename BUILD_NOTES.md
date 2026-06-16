@@ -1,19 +1,19 @@
 # CocoDrop Landing — Build Notes
 
-## The strategy (SIT: Task Unification)
-This is NOT a passive waitlist. It's a segmentation engine that sorts every
-visitor into Maker / Creator / Shopper — so by launch you don't have "500 emails",
-you have "40 makers, 25 creators, 200 shoppers" sorted and ready to activate in
-the right order.
+## The strategy (Beta Launch — 50 Testers)
+This is a closed beta recruitment page. It recruits exactly 50 testers across
+three roles (Maker / Creator / Shopper) who will test the CocoDrop app, record
+their sessions via CocoDrop Lens, and provide feedback that shapes the final
+product before public launch.
 
 ## Three innovation moves baked in
 1. **Segmentation** — three paths, each with tailored pitch + benefits
-2. **Live counter** — manufactured social proof, climbs on load
+2. **Live counter** — shows X of 50 beta spots filled (real scarcity)
 3. **Source tracking** — ?from=heartfm tailors the welcome AND tracks which
    radio station drove the most signups
 
 ## Google Sheet setup
-Create a sheet "CocoDrop — Founding Community" with columns:
+Create a sheet "CocoDrop — Beta Testers" with columns:
 Joined At | Name | Role | Contact | Extra | Source
 
 Apps Script (Extensions → Apps Script):
@@ -30,12 +30,16 @@ Deploy as Web App → Execute as Me → Anyone access → copy URL into
 GOOGLE_SHEET_WEBHOOK.
 
 ## Counter note
-The live counter currently animates to a base number (247). To make it reflect
-real signups, later wire the /api/join route to read the sheet row count and
-return it as `total`. For launch, the base number creates momentum; bump it
-manually as real signups grow.
+The counter animates to a base of 50 (total beta spots). When a signup comes
+in, the API can return an updated count. Once 50 is reached, the page should
+show "Beta full — thanks!" and stop accepting submissions.
 
-## Domain swap on go-live
+## Tester distribution (recommended)
+- 20 Shopper testers (split across first-impression, buy flow, live drop)
+- 15 Creator testers (host flow)
+- 15 Maker testers (listing flow)
+
+## Domain plan
 1. Now: cocodrop.co.za → this landing repo
-2. Go-live: in Vercel, repoint cocodrop.co.za → cocodrop-platform repo
+2. Post-beta: repoint cocodrop.co.za → cocodrop-platform repo
 3. Optional: keep landing alive at join.cocodrop.co.za
