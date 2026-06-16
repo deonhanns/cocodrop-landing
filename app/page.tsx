@@ -9,6 +9,8 @@ import type { IconName } from "@/components/Icon";
 
 type Path = "maker" | "creator" | "shopper" | null;
 
+const TOTAL_SPOTS = 50;
+
 const PATHS = {
   maker: {
     label: "I make things",
@@ -66,14 +68,32 @@ function LandingContent() {
 
   const [path, setPath] = useState<Path>(null);
   const [count, setCount] = useState(0);
-  const [targetCount, setTargetCount] = useState(50);
+  const [realCount, setRealCount] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
-  // Animated counter on load
   useEffect(() => {
+    let cancelled = false;
+    fetch("/api/count")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && typeof data.count === "number") {
+          setRealCount(data.count);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const target = realCount;
+    if (target <= 0) {
+      setCount(0);
+      return;
+    }
     let start = 0;
-    const target = targetCount;
-    const step = Math.max(1, Math.floor(target / 40));
+    const step = Math.max(1, Math.ceil(target / 40));
     const timer = setInterval(() => {
       start += step;
       if (start >= target) {
@@ -83,9 +103,8 @@ function LandingContent() {
       setCount(start);
     }, 30);
     return () => clearInterval(timer);
-  }, [targetCount]);
+  }, [realCount]);
 
-  // Source-based welcome
   const sourceWelcome: Record<string, string> = {
     heartfm: "Heard us on Heart FM? Welcome.",
     kfm: "Heard us on KFM? Welcome.",
@@ -173,8 +192,8 @@ function LandingContent() {
               />
             </div>
             <span className="mono text-sm text-cream">
-              <span className="text-ember font-bold">{count}</span> of 50 beta
-              spots filled
+              <span className="text-ember font-bold">{count}</span> of{" "}
+              {TOTAL_SPOTS} beta spots filled
             </span>
           </div>
         </div>
@@ -230,9 +249,9 @@ function LandingContent() {
                 path={path}
                 source={source}
                 onBack={() => setPath(null)}
-                onDone={(newTotal) => {
+                onDone={() => {
                   setSubmitted(true);
-                  if (newTotal) setTargetCount(newTotal);
+                  setRealCount((c) => c + 1);
                 }}
               />
             )}
@@ -262,7 +281,7 @@ function SignupForm({
   path: keyof typeof PATHS;
   source: string;
   onBack: () => void;
-  onDone: (total?: number) => void;
+  onDone: () => void;
 }) {
   const p = PATHS[path];
   const [name, setName] = useState("");
@@ -297,8 +316,8 @@ function SignupForm({
           joinedAt: new Date().toISOString(),
         }),
       });
-      const data = await res.json();
-      onDone(data.total);
+      if (!res.ok) throw new Error("failed");
+      onDone();
     } catch {
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
